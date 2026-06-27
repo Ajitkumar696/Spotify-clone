@@ -37,7 +37,7 @@ const UploadMusic = () => {
     try {
       setLoading(true);
 
-      const res = await fetch("http://localhost:3000/api/music/upload", {
+      const res = await fetch("https://spotify-clone-kniz.onrender.com/api/music/upload", {
         method: "POST",
         body: formData,
         credentials: "include",

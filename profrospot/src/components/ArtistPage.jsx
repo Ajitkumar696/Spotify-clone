@@ -33,7 +33,7 @@ const ArtistPage = () => {
   useEffect(() => {
     const fetchSongs = async () => {
       try {
-        const res = await fetch("http://localhost:3000/api/music", {
+        const res = await fetch("https://spotify-clone-kniz.onrender.com/api/music", {
           credentials: "include",
         });
 
