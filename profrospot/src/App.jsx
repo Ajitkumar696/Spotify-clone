@@ -1,4 +1,4 @@
-import Sidebar from "./components/Sidebar.jsx";
+import Sidebar from "./components/sidebar.jsx";
 import Display from "./components/display";
 export default function App() {
   return (
