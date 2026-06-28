@@ -8,7 +8,7 @@ const authroutes = require('./routes/auth.routes');
 const musicroutes = require('./routes/music.routes');
 
 app.use(cors({
-  origin: "http://localhost:5173",
+  origin: ["http://localhost:5173", "https://spotify-clone-blond-two.vercel.app"],
   methods: ["GET", "POST", "PUT", "DELETE"],
   credentials: true
 }));
