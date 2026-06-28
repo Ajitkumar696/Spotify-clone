@@ -32,7 +32,12 @@ async function registerUser(req, res) {
         process.env.JWT_SECRET
     );
 
-    res.cookie("token", token);
+    res.cookie("token", token, {
+        httpOnly: true,
+        secure: true,
+        sameSite: "none",
+        maxAge: 7 * 24 * 60 * 60 * 1000
+    });
 
     res.status(201).json({
         message: "user registered successfully",
@@ -44,44 +49,57 @@ async function registerUser(req, res) {
         }
     });
 }
-async function loginUser(req,res){
-    const{username,email,password}=req.body;
-    const user=await userModel.findOne({
-        $or:[
-            {username},{email}
+
+async function loginUser(req, res) {
+    const { username, email, password } = req.body;
+    const user = await userModel.findOne({
+        $or: [
+            { username }, { email }
         ]
-    })
-    if (!user){
+    });
+    if (!user) {
         return res.status(401).json({
-            message:"invalid user credentials"
-        })
+            message: "invalid user credentials"
+        });
     }
-    const isPasswordValid= await bcrypt.compare(password,user.password)
-   if(!isPasswordValid){
-    return res.status(401).json({
-        message: "invalid user credentials"
-    })
-   } 
-   const token =jwt.sign({
-    id:user._id,
-    role:user.role,
-   },process.env.JWT_SECRET)
-   res.cookie("token", token); 
-   res.status(200).json({
-    message:"user loged sucessfully",
-    user:{
-      id:user._id,
-      username:user.username,
-      email:user.email,
-      role:user.role,
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!isPasswordValid) {
+        return res.status(401).json({
+            message: "invalid user credentials"
+        });
     }
-   })
-}
-async function logoutUser(req,res){
-   res.clearCookie("token")
-   res.status(200).json({
-    message:"user logged out sucessfully"
-   }) 
+    const token = jwt.sign({
+        id: user._id,
+        role: user.role,
+    }, process.env.JWT_SECRET);
+
+    res.cookie("token", token, {
+        httpOnly: true,
+        secure: true,
+        sameSite: "none",
+        maxAge: 7 * 24 * 60 * 60 * 1000
+    });
+
+    res.status(200).json({
+        message: "user loged sucessfully",
+        user: {
+            id: user._id,
+            username: user.username,
+            email: user.email,
+            role: user.role,
+        }
+    });
 }
 
-module.exports = { registerUser,loginUser,logoutUser };
+async function logoutUser(req, res) {
+    res.clearCookie("token", {
+        httpOnly: true,
+        secure: true,
+        sameSite: "none"
+    });
+    res.status(200).json({
+        message: "user logged out sucessfully"
+    });
+}
+
+module.exports = { registerUser, loginUser, logoutUser };

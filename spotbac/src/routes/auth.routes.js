@@ -1,10 +1,3 @@
-/*const express=require('express');
-const authController=require("../controller/auth.controller");
-const authroutes=express.Router();
-authroutes.post('/register',authController.registerUser);
-authroutes.post('/login',authController.loginUser)
-authroutes.post('/logout',authController.logoutUser)
-module.exports=authroutes; */
 const express = require('express');
 const authController = require("../controller/auth.controller");
 
