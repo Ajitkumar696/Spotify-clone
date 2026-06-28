@@ -9,19 +9,20 @@ const SearchPage = () => {
   const [songs, setSongs] = useState([]);
   const [filteredSongs, setFilteredSongs] = useState([]);
 
-  // ---------------- FETCH ALL SONGS ----------------
   useEffect(() => {
     const fetchSongs = async () => {
       try {
+        const token = localStorage.getItem("token");
         const res = await fetch("https://spotify-clone-kniz.onrender.com/api/music", {
           credentials: "include",
+          headers: token ? { Authorization: `Bearer ${token}` } : {},
         });
 
         const data = await res.json();
         const allSongs = data.music || [];
 
         setSongs(allSongs);
-        setFilteredSongs(allSongs); // default show all
+        setFilteredSongs(allSongs);
       } catch (err) {
         console.log("Search page error:", err);
       }
@@ -30,7 +31,6 @@ const SearchPage = () => {
     fetchSongs();
   }, []);
 
-  // ---------------- SEARCH LOGIC ----------------
   const handleSearch = (text) => {
     setQuery(text);
 
@@ -46,7 +46,6 @@ const SearchPage = () => {
       );
     });
 
-    // if no result → show all songs (fallback)
     if (result.length === 0) {
       setFilteredSongs(songs);
     } else {
@@ -57,7 +56,6 @@ const SearchPage = () => {
   return (
     <div className="min-h-screen bg-black text-white">
 
-      {/* HEADER */}
       <div className="flex items-center gap-3 p-4 bg-[#181818]">
         <button onClick={() => navigate("/home")}>
           <ArrowLeft />
@@ -74,7 +72,6 @@ const SearchPage = () => {
         </div>
       </div>
 
-      {/* RESULTS */}
       <div className="p-4">
 
         {query && filteredSongs.length > 0 && (
@@ -95,7 +92,6 @@ const SearchPage = () => {
               key={song._id}
               className="flex items-center justify-between bg-[#181818] p-3 rounded-lg hover:bg-[#282828]"
             >
-              {/* LEFT */}
               <div className="flex items-center gap-3">
                 <img
                   src={
@@ -113,7 +109,6 @@ const SearchPage = () => {
                 </div>
               </div>
 
-              {/* PLAY BUTTON (optional later connect global player) */}
               <button
                 className="bg-green-500 text-black px-4 py-1 rounded-full"
                 onClick={() => console.log("play:", song.uri)}

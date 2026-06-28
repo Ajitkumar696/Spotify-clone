@@ -9,7 +9,6 @@ const UploadMusic = () => {
   const [songFile, setSongFile] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  // 🔒 ROLE CHECK
   useEffect(() => {
     const role = (localStorage.getItem("role") || "")
       .trim()
@@ -20,7 +19,6 @@ const UploadMusic = () => {
     }
   }, [navigate]);
 
-  // 🎵 UPLOAD FUNCTION
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -37,10 +35,12 @@ const UploadMusic = () => {
     try {
       setLoading(true);
 
+      const token = localStorage.getItem("token");
       const res = await fetch("https://spotify-clone-kniz.onrender.com/api/music/upload", {
         method: "POST",
         body: formData,
         credentials: "include",
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
       });
 
       const data = await res.json();
@@ -67,7 +67,6 @@ const UploadMusic = () => {
   return (
     <div className="min-h-screen bg-black flex flex-col items-center justify-center px-4">
 
-      {/* CARD */}
       <form
         onSubmit={handleSubmit}
         className="bg-[#181818] p-8 rounded-xl w-full max-w-lg space-y-6 text-white"
@@ -76,7 +75,6 @@ const UploadMusic = () => {
           Upload Music
         </h1>
 
-        {/* TITLE */}
         <input
           type="text"
           value={title}
@@ -85,7 +83,6 @@ const UploadMusic = () => {
           className="w-full p-3 rounded bg-[#282828] outline-none"
         />
 
-        {/* COVER IMAGE */}
         <input
           type="file"
           accept="image/*"
@@ -93,7 +90,6 @@ const UploadMusic = () => {
           className="w-full text-white"
         />
 
-        {/* SONG FILE */}
         <input
           type="file"
           accept="audio/*"
@@ -101,7 +97,6 @@ const UploadMusic = () => {
           className="w-full text-white"
         />
 
-        {/* UPLOAD BUTTON */}
         <button
           type="submit"
           disabled={loading}
@@ -111,7 +106,6 @@ const UploadMusic = () => {
         </button>
       </form>
 
-      {/* 🔙 BACK BUTTON (OUTSIDE CARD) */}
       <button
         onClick={() => navigate("/home", { replace: true })}
         className="mt-6 w-full max-w-lg bg-gray-700 hover:bg-gray-600 text-white font-bold py-3 rounded-full"

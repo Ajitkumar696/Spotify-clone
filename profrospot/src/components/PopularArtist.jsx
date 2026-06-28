@@ -19,11 +19,13 @@ const PopularArtists = () => {
   
   const [artists, setArtists] = useState([]);
   const navigate = useNavigate();
-  useEffect(() => {
+ useEffect(() => {
   const fetchArtists = async () => {
     try {
+      const token = localStorage.getItem("token");
       const res = await fetch("https://spotify-clone-kniz.onrender.com/api/music", {
         credentials: "include",
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
       });
 
       const data = await res.json();

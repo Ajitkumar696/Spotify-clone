@@ -47,11 +47,14 @@ const Navbar = () => {
 
   const logout = async () => {
     try {
+      const token = localStorage.getItem("token");
       await fetch("https://spotify-clone-kniz.onrender.com/api/logout", {
         method: "POST",
         credentials: "include",
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
       });
       localStorage.removeItem("user");
+      localStorage.removeItem("token");
       setUser({ username: "", email: "", role: "" });
       setOpen(false);
       setMobileOpen(false);
@@ -73,14 +76,12 @@ const Navbar = () => {
   return (
     <div className="w-full h-16 bg-black flex items-center justify-between px-3 sm:px-6 text-white gap-2 relative z-40">
 
-      {/* LOGO - always leftmost */}
       <img
         src="https://upload.wikimedia.org/wikipedia/commons/8/84/Spotify_icon.svg"
         className="w-8 h-8 cursor-pointer flex-shrink-0"
         onClick={() => navigate("/home")}
       />
 
-      {/* DESKTOP/TABLET ONLY: BACK / FORWARD ARROWS */}
       <button
         onClick={() => navigate(-1)}
         className="hidden md:flex bg-zinc-900 p-2 rounded-full flex-shrink-0"
@@ -95,7 +96,6 @@ const Navbar = () => {
         <ChevronRight size={20} />
       </button>
 
-      {/* SEARCH BAR */}
       <div className="flex items-center bg-zinc-800 rounded-full px-3 sm:px-4 py-2 w-full max-w-[200px] sm:max-w-none sm:w-96 gap-2 min-w-0 flex-1 md:flex-shrink">
         <Search size={16} className="text-gray-400 flex-shrink-0" />
         <input
@@ -107,7 +107,6 @@ const Navbar = () => {
         />
       </div>
 
-      {/* DESKTOP/TABLET ONLY: Explore Premium / Support / Download */}
       <button className="hidden lg:block bg-white text-black px-4 py-2 rounded-full font-bold whitespace-nowrap flex-shrink-0">
         Explore Premium
       </button>
@@ -121,7 +120,6 @@ const Navbar = () => {
         Download
       </button>
 
-      {/* MOBILE ONLY: PROFILE BUTTON - rightmost */}
       <div className="md:hidden relative flex-shrink-0" ref={mobileDropdownRef}>
         <button
           onClick={() => setMobileOpen(!mobileOpen)}
@@ -164,7 +162,6 @@ const Navbar = () => {
         )}
       </div>
 
-      {/* DESKTOP/TABLET ONLY: PROFILE BUTTON - rightmost */}
       <div className="hidden md:block relative flex-shrink-0" ref={dropdownRef}>
         <button
           onClick={() => setOpen(!open)}

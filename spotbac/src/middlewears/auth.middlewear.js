@@ -1,32 +1,42 @@
-const jwt=require('jsonwebtoken');
-async function authArtist(req,res,next){
-    const token=req.cookies.token;
-        if(!token){
-            res.status(401).json({
-                message:"unathorised"
-            })
-        }
-        try{
-            const decoded=jwt.verify(token,process.env.JWT_SECRET)
-         if(decoded.role!="artist"){
+const jwt = require('jsonwebtoken');
+
+function getToken(req) {
+    if (req.cookies && req.cookies.token) {
+        return req.cookies.token;
+    }
+    const authHeader = req.headers.authorization;
+    if (authHeader && authHeader.startsWith("Bearer ")) {
+        return authHeader.split(" ")[1];
+    }
+    return null;
+}
+
+async function authArtist(req, res, next) {
+    const token = getToken(req);
+    if (!token) {
+        return res.status(401).json({
+            message: "unathorised"
+        });
+    }
+    try {
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        if (decoded.role != "artist") {
             return res.status(403).json({
-                message:"you don't have access to creat album"
-            })
-    
-         }
-         req.user= decoded;
-         next()
+                message: "you don't have access to creat album"
+            });
         }
-         catch(err){
+        req.user = decoded;
+        next();
+    } catch (err) {
         console.log(err);
         return res.status(401).json({
-            message:"unathorised"
-        })
+            message: "unathorised"
+        });
     }
-
 }
+
 function auth(req, res, next) {
-    const token = req.cookies.token;
+    const token = getToken(req);
 
     if (!token) {
         return res.status(401).json({
@@ -44,8 +54,9 @@ function auth(req, res, next) {
         });
     }
 }
+
 async function authUser(req, res, next) {
-    const token = req.cookies.token;
+    const token = getToken(req);
 
     if (!token) {
         return res.status(401).json({
@@ -74,4 +85,4 @@ async function authUser(req, res, next) {
     }
 }
 
-module.exports={authArtist,authUser,auth}
+module.exports = { authArtist, authUser, auth };

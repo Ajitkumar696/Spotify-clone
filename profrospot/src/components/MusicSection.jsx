@@ -12,8 +12,10 @@ const MusicSection = () => {
   useEffect(() => {
     const fetchSongs = async () => {
       try {
+        const token = localStorage.getItem("token");
         const res = await fetch("https://spotify-clone-kniz.onrender.com/api/music", {
           credentials: "include",
+          headers: token ? { Authorization: `Bearer ${token}` } : {},
         });
         const data = await res.json();
         setSongs((data.music || []).reverse());
@@ -87,7 +89,6 @@ const MusicSection = () => {
   return (
     <div className={`text-white bg-black ${currentSong ? "pb-28" : "pb-2"}`}>
 
-      {/* 🔥 HIDE SCROLLBAR (GLOBAL STYLE) */}
       <style>{`
         .hide-scrollbar::-webkit-scrollbar {
           display: none;
@@ -104,7 +105,6 @@ const MusicSection = () => {
         </h2>
       </div>
 
-      {/* 🔥 HORIZONTAL SCROLL WITHOUT SCROLLBAR */}
       <div
         className="
           hide-scrollbar
@@ -135,14 +135,14 @@ const MusicSection = () => {
             >
               <div className="relative w-full aspect-square">
                 <img
-  src={
-    song.coverImage
-      ? song.coverImage
-      : `https://picsum.photos/300/300?random=${song._id}`
-  }
-  className="w-full h-full object-cover"
-  alt={song.title}
-/>
+                  src={
+                    song.coverImage
+                      ? song.coverImage
+                      : `https://picsum.photos/300/300?random=${song._id}`
+                  }
+                  className="w-full h-full object-cover"
+                  alt={song.title}
+                />
 
                 <div
                   className={`
@@ -171,58 +171,55 @@ const MusicSection = () => {
         })}
       </div>
 
-      {/* PLAYER (UNCHANGED) */}
-     {currentSong && (
-  <div className="fixed bottom-0 left-0 right-0 bg-black border-t border-gray-800 z-50">
+      {currentSong && (
+        <div className="fixed bottom-0 left-0 right-0 bg-black border-t border-gray-800 z-50">
 
-    {/* Progress Bar */}
-    <div className="px-4 pt-2">
-      <input
-        type="range"
-        min="0"
-        max={duration || 0}
-        value={progress}
-        onChange={handleSeek}
-        className="w-full accent-green-500 cursor-pointer"
-      />
+          <div className="px-4 pt-2">
+            <input
+              type="range"
+              min="0"
+              max={duration || 0}
+              value={progress}
+              onChange={handleSeek}
+              className="w-full accent-green-500 cursor-pointer"
+            />
 
-      <div className="flex justify-between text-xs text-gray-400 mt-1">
-        <span>{formatTime(progress)}</span>
-        <span>{formatTime(duration)}</span>
-      </div>
-    </div>
+            <div className="flex justify-between text-xs text-gray-400 mt-1">
+              <span>{formatTime(progress)}</span>
+              <span>{formatTime(duration)}</span>
+            </div>
+          </div>
 
-    {/* Player */}
-    <div className="flex items-center gap-3 px-4 py-3">
+          <div className="flex items-center gap-3 px-4 py-3">
 
-      <img
-        src={
-          currentSong.coverImage ||
-          `https://picsum.photos/100/100?random=${currentSong._id}`
-        }
-        alt={currentSong.title}
-        className="w-12 h-12 rounded-md object-cover"
-      />
+            <img
+              src={
+                currentSong.coverImage ||
+                `https://picsum.photos/100/100?random=${currentSong._id}`
+              }
+              alt={currentSong.title}
+              className="w-12 h-12 rounded-md object-cover"
+            />
 
-      <div className="flex-1">
-        <p className="font-semibold truncate">
-          {currentSong.title}
-        </p>
-        <p className="text-sm text-gray-400 truncate">
-          {currentSong.artist?.username}
-        </p>
-      </div>
+            <div className="flex-1">
+              <p className="font-semibold truncate">
+                {currentSong.title}
+              </p>
+              <p className="text-sm text-gray-400 truncate">
+                {currentSong.artist?.username}
+              </p>
+            </div>
 
-      <button
-        onClick={togglePlay}
-        className="bg-green-500 text-black w-12 h-12 rounded-full text-xl font-bold"
-      >
-        {isPlaying ? "⏸" : "▶"}
-      </button>
+            <button
+              onClick={togglePlay}
+              className="bg-green-500 text-black w-12 h-12 rounded-full text-xl font-bold"
+            >
+              {isPlaying ? "⏸" : "▶"}
+            </button>
 
-    </div>
-  </div>
-)}
+          </div>
+        </div>
+      )}
     </div>
   );
 };

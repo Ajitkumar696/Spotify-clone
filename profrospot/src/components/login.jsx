@@ -30,6 +30,11 @@ const Login = () => {
         // 🚨 CLEAR OLD STATE FIRST (VERY IMPORTANT)
         localStorage.clear();
 
+        // save token for mobile/cross-domain auth
+        if (data.token) {
+          localStorage.setItem("token", data.token);
+        }
+
         // save fresh user
         localStorage.setItem("user", JSON.stringify(data.user));
         localStorage.setItem("role", data.user.role.toLowerCase());

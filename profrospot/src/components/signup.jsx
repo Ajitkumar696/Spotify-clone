@@ -29,6 +29,11 @@ const Register = () => {
       const data = await res.json();
 
       if (res.ok && data.user) {
+        // Save token for mobile/cross-domain auth
+        if (data.token) {
+          localStorage.setItem("token", data.token);
+        }
+
         // Save user information
         localStorage.setItem("user", JSON.stringify(data.user));
 

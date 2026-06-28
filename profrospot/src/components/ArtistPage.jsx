@@ -23,7 +23,6 @@ const ArtistPage = () => {
   const [songs, setSongs] = useState([]);
   const [artist, setArtist] = useState(null);
 
-  // 🔥 AUDIO STATE (IMPORTANT FIX)
   const audioRef = useRef(null);
   const [currentSong, setCurrentSong] = useState(null);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -33,8 +32,10 @@ const ArtistPage = () => {
   useEffect(() => {
     const fetchSongs = async () => {
       try {
+        const token = localStorage.getItem("token");
         const res = await fetch("https://spotify-clone-kniz.onrender.com/api/music", {
           credentials: "include",
+          headers: token ? { Authorization: `Bearer ${token}` } : {},
         });
 
         const data = await res.json();
@@ -77,12 +78,10 @@ const ArtistPage = () => {
     fetchSongs();
   }, [decodedUsername]);
 
-  // 🎵 PLAY / PAUSE FIXED LOGIC
   const togglePlay = (song) => {
     const url = song.uri;
     if (!url) return;
 
-    // If same song -> toggle pause/play
     if (currentSong?._id === song._id) {
       if (isPlaying) {
         audioRef.current.pause();
@@ -94,7 +93,6 @@ const ArtistPage = () => {
       return;
     }
 
-    // New song
     if (audioRef.current) {
       audioRef.current.pause();
     }
@@ -130,7 +128,6 @@ const ArtistPage = () => {
   return (
     <div className="min-h-screen bg-black text-white pb-28">
 
-      {/* HEADER */}
       <div className="relative w-full h-72 bg-[#181818]">
         <button
           onClick={() => navigate("/home")}
@@ -152,7 +149,6 @@ const ArtistPage = () => {
         </div>
       </div>
 
-      {/* SONG LIST */}
       <div className="p-6">
         {songs.map((song) => (
           <div
@@ -190,7 +186,6 @@ const ArtistPage = () => {
         ))}
       </div>
 
-      {/* 🔥 BOTTOM PLAYER (NEW FIX) */}
       {currentSong && (
         <div className="fixed bottom-0 left-0 w-full bg-[#121212] p-4 border-t border-gray-800">
           
